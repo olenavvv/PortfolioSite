@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Forecast</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Photographer Elena Velychko">
+  <meta name="keywords" content="Photographer, Photostudio, wedding photos, bithday's photos">
+  <meta name="author" content="Olena Velychko">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/about.css">
+  <script type="text/javascript"  href="js/jquery.min.js"></script>
+  <script type="text/javascript"  href="js/bootstrap.min.js"></script> 
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+    table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    }
+    th, td {
+        padding:15px;
+    }
+     #social img { 
+      height: 35px; width: 35px; 
+    }
+
+
+   
+  </style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="" ><img src="images/logo.png" width="40" height="40" style=" margin-top: -10px;">   
+      </a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li ><a href="index.html">Home</a></li>
+        <li ><a href="about.html">About</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li class = "active"><a href="weather.html">Weather</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="jumbotron" style="background-color:hsl(0, 100%, 75%);">
+  <div class="container text-center">
+    <h1>Elena Velychko Photographer</h1>      
+    <p>Remember this moment beautiful </p>    
+  </div>
+</div>
+  
+  <div class="row">
+	  <div class="column side">	    
+	  </div>
+
+		  <div class="column middle">
+
+			  Select the forecast:
+			<select id = "choice" >
+			  <option value="0" >Tomorrow</option>
+			  <option value="1">2 days forecast</option>
+			  <option value="2">3 days forecast</option>
+			  <option value="3">4 days forecast</option>
+			  <option value="4">5 days forecast</option>
+			</select>
+
+			<p>Click the button: </p>
+
+			<button type="button" onclick="myFunction()">Press</button>
+			
+		
+
+			<script>
+				//use strict								
+
+				//function to indicate today's date , call function dateOfForecast(), 
+				//to call function dataWeather()
+				function myFunction() 
+				{
+					let now = new Date();
+					let strDate = dateOfForecast(now, document.getElementById("choice").value ); 	
+					console.log(strDate);				   
+				    document.getElementById("fullDate").innerHTML =  strDate; //date of forecast in table
+
+				    dataWeather();		   
+				}
+
+				//function to set day of forecast depending on choice of user, return string in table
+				function dateOfForecast(data, daysForecast)
+				{
+					let currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);					
+					let day = currentDate.getDate() + parseInt(daysForecast);
+					let month = currentDate.getMonth() + 1;
+					let year = currentDate.getFullYear();
+					let str = day + "/" + month + "/" + year ;
+					return str;
+				}
+
+				//function to get information about weather using Ajax
+				function dataWeather()
+				{
+					let request = new XMLHttpRequest();
+					request.open('GET', " http://api.openweathermap.org/data/2.5/forecast?q=Montreal,ca&units=metric&APPID=3a09644717aeba0ad3d4f147e40b4bfd", true);
+					request.onload  = function()
+					{
+						let forecast = JSON.parse(request.responseText);
+						console.log(forecast);
+						let forecast2 = Object.values(forecast);
+						console.log(forecast2);							
+
+						if(parseInt(document.getElementById("choice").value)  == 0)
+						{
+						document.getElementById("clearness").innerText = forecast2[3][7].weather[0].description;
+						document.getElementById("temper").innerText = forecast2[3][7].main.temp  + "\xb0" + " C";
+						document.getElementById("wind").innerText = forecast2[3][7].wind.speed +" m/s";
+						document.getElementById("humid").innerText = forecast2[3][7].main.humidity + " %";
+						document.getElementById("icon").src = "http://openweathermap.org/img/w/" + forecast2[3][7].weather[0].icon + ".png";										
+						}
+						else if (parseInt(document.getElementById("choice").value)  == 1)
+						{
+						document.getElementById("clearness").innerText = forecast2[3][15].weather[0].description;
+						document.getElementById("temper").innerText = forecast2[3][15].main.temp + "\xb0" + " C";
+						document.getElementById("wind").innerText = forecast2[3][15].wind.speed + " m/s";
+						document.getElementById("humid").innerText = forecast2[3][15].main.humidity + " %";		
+						document.getElementById("icon").src = "http://openweathermap.org/img/w/" + forecast2[3][15].weather[0].icon + ".png";
+							
+						}
+						else if (parseInt(document.getElementById("choice").value)  == 2)
+						{
+						document.getElementById("clearness").innerText = forecast2[3][23].weather[0].description;
+						document.getElementById("temper").innerText = forecast2[3][23].main.temp + "\xb0" + " C";
+						document.getElementById("wind").innerText = forecast2[3][23].wind.speed + " m/s";
+						document.getElementById("humid").innerText = forecast2[3][23].main.humidity + " %";		
+						document.getElementById("icon").src = "http://openweathermap.org/img/w/" + forecast2[3][23].weather[0].icon + ".png";
+						}
+						else if (parseInt(document.getElementById("choice").value)  == 3)
+						{
+						document.getElementById("clearness").innerText = forecast2[3][31].weather[0].description;
+						document.getElementById("temper").innerText = forecast2[3][31].main.temp + "\xb0" + " C";
+						document.getElementById("wind").innerText = forecast2[3][31].wind.speed + " m/s";
+						document.getElementById("humid").innerText = forecast2[3][23].main.humidity + " %";		
+						document.getElementById("icon").src = "http://openweathermap.org/img/w/" + forecast2[3][23].weather[0].icon + ".png";
+						}
+						else if (parseInt(document.getElementById("choice").value)  == 4)
+						{
+						document.getElementById("clearness").innerText = forecast2[3][38].weather[0].description;
+						document.getElementById("temper").innerText = forecast2[3][38].main.temp + "\xb0" + " C";
+						document.getElementById("wind").innerText = forecast2[3][38].wind.speed + " m/s";
+						document.getElementById("humid").innerText = forecast2[3][38].main.humidity + " %";		
+						document.getElementById("icon").src = "http://openweathermap.org/img/w/" + forecast2[3][38].weather[0].icon + ".png";
+						}
+					}
+				
+					request.send();
+				}
+			</script>
+
+
+		<article>
+			<h2>Forecast</h2>
+			<table style="width:100%">
+			  <tr>
+			  	<th >Date</th>
+			    <th>Clearness</th>
+			    <th>Teperature</th> 
+			    <th>Wind</th>
+			    <th>Humidity</th>
+			    <th>Icon</th>
+			  </tr>
+			  <tr>
+			  	<td id = "fullDate"></td>
+			    <td id ="clearness"></td>
+			    <td id = "temper"></td>
+			    <td id = "wind"></td>
+			    <td id = "humid"></td>
+			    <td><img id="icon" src=""></td>
+			  </tr>
+			  
+			</table>
+		</article>
+				
+	  </div>
+	  <div class="column side">
+	   
+	  </div>
+</div>
+  
+ 
+
+<footer class="container-fluid text-center">
+  <p>All rights reserved &copy Copyright Elena Velychko - 2018</p>
+  <nav id="social">
+  <a href="https://www.facebook.com"  target="_blank;">
+    <img src="images/facebook.png" >
+  </a> 
+  <a href="https://www.linkedin.com/" target="_blank;">
+    <img src="images/linkedin.png">
+  </a> 
+  <a href="https://twitter.com" target="_blank;">
+    <img src="images/twitter.png">
+  </a> 
+  <a href="https://www.instagram.com/" target="_blank;">
+    <img src="images/instagram.png">
+  </a>
+</nav>
+</footer>
+
+</body>
+</html>
